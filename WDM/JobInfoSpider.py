@@ -7,7 +7,7 @@ import csv
 csv_file = open("JobFairInfo.csv","w")
 csv_writer = csv.writer(csv_file, delimiter=',')
 Career_url = "http://career.buaa.edu.cn/"
-for i in range(18,22):
+for i in range(22,25):
     Cpy_Names = []
     Cpy_Times = []
     Cpy_Adresses = []
