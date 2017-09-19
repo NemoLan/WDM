@@ -40,13 +40,27 @@ HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历�
 	$ git checkout -- test.txt
 
 ##远程仓库
-要关联一个远程库，使用命令:
-git remote add origin https://github.com/NemoLan/WDM.git
-关联后，第一次推送master分支的所有内容,使用命令:
-git push -u origin master；
-此后，每次本地提交（git commit）后，只要推送最新修改，就可以使用命令：
-git push origin master
+1. 要关联一个远程库，使用命令:
+	git remote add origin https://github.com/NemoLan/WDM.git
+	或者：
+	git remote add origin git@github.com:NemoLan/WDM.git
+	（Git支持多种协议，默认的git://使用ssh，但也可以使用https等其他协议。使用https除了速度慢以外，还有个最大的麻烦是每次推送都必须输入口令，但是在某些只开放http端口的公司内部就无法使用ssh协议而只能用https。）
 
+2. 关联后，第一次推送master分支的所有内容,使用命令:
+	git push -u origin master；
+	此后，每次本地提交（git commit）后，只要推送最新修改，就可以使用命令：
+	git push origin master
+	
+3. 从远程仓库克隆到本地
+	a.用命令git clone克隆一个本地库：
+		git clone git@github.com:NemoLan/WDM.git
+	b.要克隆一个仓库
+		首先，必须知道仓库的地址，然后使用git clone命令克隆。
+		Git支持多种协议，包括https，但通过ssh支持的原生git协议速度最快。 
 
-
-
+##创建与合并分支
+1. Git用HEAD指向当前分支master（或者其他），master指向最新的提交，再用HEAD指向master，就能确定当前分支，以及当前分支的提交点。
+2. 当我们创建新的分支，例如dev时，Git新建了一个指针叫dev，指向master相同的提交，再把HEAD指向dev，就表示当前分支在dev上。（Git创建一个分支很快，因为除了增加一个dev指针，改改HEAD的指向，工作区的文件都没有任何变化！）
+从现在开始，对工作区的修改和提交就是针对dev分支了，比如新提交一次后，dev指针往前移动一步，而master指针不变。
+3. 在dev上的工作完成了，就可以把dev合并到master上，方法就是直接把master指向dev的当前提交。
+合并完分支后，甚至可以删除dev分支。删除dev分支就是把dev指针给删掉。
