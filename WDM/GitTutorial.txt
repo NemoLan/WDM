@@ -60,7 +60,70 @@ HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历�
 
 ##创建与合并分支
 1. Git用HEAD指向当前分支master（或者其他），master指向最新的提交，再用HEAD指向master，就能确定当前分支，以及当前分支的提交点。
-2. 当我们创建新的分支，例如dev时，Git新建了一个指针叫dev，指向master相同的提交，再把HEAD指向dev，就表示当前分支在dev上。（Git创建一个分支很快，因为除了增加一个dev指针，改改HEAD的指向，工作区的文件都没有任何变化！）
-从现在开始，对工作区的修改和提交就是针对dev分支了，比如新提交一次后，dev指针往前移动一步，而master指针不变。
+2. 当我们创建新的分支，例如dev时，Git新建了一个指针叫dev，指向master相同的提交，再把HEAD切换到dev，就表示当前分支在dev上。（Git创建一个分支很快，因为除了增加一个dev指针，改改HEAD的指向，工作区的文件都没有任何变化！）
+	创建新的分支dev：
+	$ git branch dev
+	HEAD切换到dev分支：
+	$ git checkout dev
+然后用git branch命令查看当前分支，列出的所有分支中，当前分支前面会标一个*号。
+从现在开始，对工作区的修改和提交就是针对dev分支了（git add 和git commit都在dev分支上执行，而master保持不变），比如新提交一次后，dev指针往前移动一步，而master指针不变。
 3. 在dev上的工作完成了，就可以把dev合并到master上，方法就是直接把master指向dev的当前提交。
-合并完分支后，甚至可以删除dev分支。删除dev分支就是把dev指针给删掉。
+	步骤1.切换回master分支：
+	$ git checkout master
+	步骤2.把dev分支的内容合并到master分支上：
+	$ git merge --no-ff -m "merge with no-ff" dev
+%%git merge 命令用于合并指定分支（此处指定dev）到当前分支（即master）。其中--no-ff表示禁用Fast Forward模式，而用普通模式合并，合并后的历史有分支，能看出来曾经做过合并
+（合并完分支后，甚至可以删除dev分支。删除dev分支就是把dev指针给删掉。
+	$ git branch -d dev）
+	
+4. 当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+	用git log --graph命令可以看到分支图。
+Git鼓励大量使用分支：
+
+查看分支：git branch
+
+创建分支：git branch <name>
+
+切换分支：git checkout <name>  %Switched to branch '<name> '
+
+创建+切换分支：git checkout -b <name> %Switched to a new branch '<name>'
+
+合并某分支到当前分支：git merge <name>
+
+删除分支：git branch -d <name>
+
+分支图：git log --graph
+
+##BUG分支
+修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
+当手头工作没有完成时，先把工作现场git stash一下，然后去修复bug，修复后，$ git stash list再git stash pop，回到工作现场。
+步骤如下：
+把当前工作现场“储藏”起来：
+$ git stash 
+假定需要在master分支上修复，先切换到master：
+$ git checkout master 
+从master创建临时分支issue-101：
+$ git checkout -b issue-101 
+
+...在分支issue-101上修复BUG...
+修复完毕再提交：
+$ git add readme.txt 
+$ git commit -m "fix bug 101"
+修复完成后，切换到master分支：
+$ git checkout master  
+把分支issue-101的内容合并到master分支上：
+$ git merge --no-ff -m "merged bug fix 101" issue-101  
+删除issue-101分支：
+$ git branch -d issue-101   
+干完临时的BUG修复工作，还是得回复到主线上：
+看看工作现场藏哪了：
+$ git stash list
+恢复现场：
+方法1：$git stash pop
+方法2：	$ git stash apply stash@{0}
+		$ git stash drop stash@{0}
+
+
+Q&A
+Q：虽然分支issue-101修复bug后并入了master，但是dev分支并没有修复这个bug。当dev分支开发完，要并入master，不是会有冲突了吗？ 
+A:只要不是同时修改到同一个文件就不会有冲突的，冲突产生的原因是在两个分支上同时修改了某个文件的同一位置才会出现。
