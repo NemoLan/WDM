@@ -1,3 +1,11 @@
+##更改Git Bash的默认路径
+在打开git bash时，每次都是在C:\Uer路径下，每次都需要先用cd命令转换到自己需要工作的路径（cd  /f/dss）。
+修改打开git bash 时的默认的路径就可以不用每次都使用cd命令转换到需要管理的目录。
+
+修改默认路径方法：右击Git Bash图标--->选择Short Cut标题栏--->修改Start in为想要管理的目录。
+
+
+
 ##创建版本库，添加文件
 初始化一个Git仓库，使用git init命令。
 添加文件到Git仓库，分两步：
@@ -9,7 +17,8 @@ git status命令可以列出当前目录所有还没有被git管理（尚未git 
 git diff filename 顾名思义就是查看difference，显示修改内容
 ##版本回退
 HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭：
-	使用命令git reset --hard commit_id。
+	使用命令
+	$git reset --hard commit_id。
 穿梭前，用git log可以查看提交历史，以便确定要回退到哪个版本。
 要重返未来，用git reflog查看命令历史，以便确定要回到未来的哪个版本。
 
@@ -44,12 +53,14 @@ HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历�
 	git remote add origin https://github.com/NemoLan/WDM.git
 	或者：
 	git remote add origin git@github.com:NemoLan/WDM.git
-	（Git支持多种协议，默认的git://使用ssh，但也可以使用https等其他协议。使用https除了速度慢以外，还有个最大的麻烦是每次推送都必须输入口令，但是在某些只开放http端口的公司内部就无法使用ssh协议而只能用https。）
+	（TIPS:	Git支持多种协议，默认的git://使用ssh，但也可以使用https等其他协议。使用https除了速度慢以外，还有个最大的麻烦是每次推送都必须输入口令，但是在某些只开放http端口的公司内部就无法使用ssh协议而只能用https。
+	不必担心地址泄露，因为即使他人关联了我的远程库，也会由于没有SSH Key公钥而无法推送的。
+	）
 
 2. 关联后，第一次推送master分支的所有内容,使用命令:
 	git push -u origin master；
 	此后，每次本地提交（git commit）后，只要推送最新修改，就可以使用命令：
-	git push origin master
+	<r>git push origin master</r>
 	
 3. 从远程仓库克隆到本地
 	a.用命令git clone克隆一个本地库：

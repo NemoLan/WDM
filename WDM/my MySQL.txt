@@ -1,0 +1,108 @@
+##在Python如何使用MySQL
+分三步：1.安装MySQL；2.为Python安装MySQL驱动；3.用
+1.安装MySQL
+	从MySQL官方网站下载对应平台安装文件，选no thanks
+	廖老师说：安装时，MySQL会提示输入root用户的口令，请务必记清楚。如果怕记不住，就把口令设置为password。而且Windows平台要选UTF-8编码（后续也可以设置、检查mysql> show variables like '%char%';）。
+	
+2.为Python安装MySQL驱动
+	pip安装：
+		2.1 mysql-connector (2.1.4)，新版本需要附加支持。
+			pip install mysql-connector==2.1.4
+		2.2 用pymysql模块代替
+			“pymsql是Python中操作MySQL的模块，其使用方法和MySQLdb几乎相同。--http://www.cnblogs.com/tkqasn/p/5849109.html”
+			
+3.用
+##登陆MySQL
+打开cmd，输入命令mysql -uroot，回车。
+命令行出现“mysql>”字符前缀，表示可以使用命令对mysql进行操作。
+mysql的所有命令都以";"或者\g为结束符
+
+##新建数据库
+首先设置字符集：
+mysql> SET NAMES utf8
+检查字符集：
+mysql> show variables like '%char%';
++--------------------------+-----------------------------------+
+| Variable_name            | Value                             |
++--------------------------+-----------------------------------+
+| character_set_client     | utf8                              |
+| character_set_connection | utf8                              |
+| character_set_database   | utf8                              |
+| character_set_filesystem | binary                            |
+| character_set_results    | utf8                              |
+| character_set_server     | utf8                              |
+| character_set_system     | utf8                              |
+| character_sets_dir       | F:\Database\mysql\share\charsets\ |
++--------------------------+-----------------------------------+
+8 rows in set, 1 warning (0.01 sec)
+再创建数据库：
+CREATE DATABASE database-name
+
+
+##基础操作语句--来源http://www.cnblogs.com/acpe/p/4970765.html
+1、说明：创建数据库
+CREATE DATABASE database-name
+2、说明：删除数据库
+drop database dbname
+3、说明：备份sql server
+--- 创建 备份数据的 device
+USE master
+EXEC sp_addumpdevice 'disk', 'testBack', 'c:\mssql7backup\MyNwind_1.dat'
+--- 开始 备份
+BACKUP DATABASE pubs TO testBack
+4、说明：创建新表
+create table tabname(col1 type1 [not null] [primary key],col2 type2 [not null],..)
+根据已有的表创建新表：
+A：create table tab_new like tab_old (使用旧表创建新表)
+B：create table tab_new as select col1,col2… from tab_old definition only
+5、说明：删除新表
+drop table tabname
+6、说明：增加一个列
+Alter table tabname add column col type
+注：列增加后将不能删除。DB2中列加上后数据类型也不能改变，唯一能改变的是增加varchar类型的长度。
+7、说明：添加主键： Alter table tabname add primary key(col)
+说明：删除主键： Alter table tabname drop primary key(col)
+8、说明：创建索引：create [unique] index idxname on tabname(col….)
+删除索引：drop index idxname
+注：索引是不可更改的，想更改必须删除重新建。
+9、说明：创建视图：create view viewname as select statement
+删除视图：drop view viewname
+10、说明：几个简单的基本的sql语句
+选择：select * from table1 where 范围
+插入：insert into table1(field1,field2) values(value1,value2)
+删除：delete from table1 where 范围
+更新：update table1 set field1=value1 where 范围
+查找：select * from table1 where field1 like ’%value1%’ ---like的语法很精妙，查资料!
+排序：select * from table1 order by field1,field2 [desc]
+总数：select count as totalcount from table1
+求和：select sum(field1) as sumvalue from table1
+平均：select avg(field1) as avgvalue from table1
+最大：select max(field1) as maxvalue from table1
+最小：select min(field1) as minvalue from table1
+11、说明：几个高级查询运算词
+A： UNION 运算符
+UNION 运算符通过组合其他两个结果表（例如 TABLE1 和 TABLE2）并消去表中任何重复行而派生出一个结果表。当 ALL 随 UNION 一起使用时（即 UNION ALL），不消除重复行。两种情况下，派生表的每一行不是来自 TABLE1 就是来自 TABLE2。
+B： EXCEPT 运算符
+EXCEPT 运算符通过包括所有在 TABLE1 中但不在 TABLE2 中的行并消除所有重复行而派生出一个结果表。当 ALL 随 EXCEPT 一起使用时 (EXCEPT ALL)，不消除重复行。
+C： INTERSECT 运算符
+INTERSECT 运算符通过只包括 TABLE1 和 TABLE2 中都有的行并消除所有重复行而派生出一个结果表。当 ALL 随 INTERSECT 一起使用时 (INTERSECT ALL)，不消除重复行。
+注：使用运算词的几个查询结果行必须是一致的。
+12、说明：使用外连接
+A、left （outer） join：
+左外连接（左连接）：结果集几包括连接表的匹配行，也包括左连接表的所有行。
+SQL: select a.a, a.b, a.c, b.c, b.d, b.f from a LEFT OUT JOIN b ON a.a = b.c
+B：right （outer） join:
+右外连接(右连接)：结果集既包括连接表的匹配连接行，也包括右连接表的所有行。
+C：full/cross （outer） join：
+全外连接：不仅包括符号连接表的匹配行，还包括两个连接表中的所有记录。
+12、分组:Group by:
+  一张表，一旦分组完成后，查询后只能得到组相关的信息。
+ 组相关的信息：（统计信息） count,sum,max,min,avg  分组的标准)
+    在SQLServer中分组时：不能以text,ntext,image类型的字段作为分组依据
+ 在selecte统计函数中的字段，不能和普通的字段放在一起；
+13、对数据库进行操作：
+ 分离数据库： sp_detach_db; 附加数据库：sp_attach_db 后接表明，附加需要完整的路径名
+14.如何修改数据库的名称:
+sp_renamedb 'old_name', 'new_name'
+15. mysql怎么修改已经定义的数据类型
+alter table 表名称 modify 字段名称 字段类型 [是否允许非空];
