@@ -1,0 +1,3 @@
+Q：multiprocessing 不能创建子进程
+A：Functionality within this package requires that the __main__ module beimportable by the children. This is covered in Programming guidelineshowever it is worth pointing out here. This means that some examples, suchas the multiprocessing.Pool examples will not work in theinteractive interpreter.  https://docs.python.org/2.7/library/multiprocessing.html#introduction 
+说人话：multiprocessing 在交互模式(你看得见 >>> 箭头就是交互模式)运行时不支持的。所以必须要在 cmd 里头输入 python xxx.py 来运行才有效果。
