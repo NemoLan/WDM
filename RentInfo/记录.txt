@@ -1,0 +1,29 @@
+由于课程中Python版本为2.7，而我个人目前使用的版本为3.5，因此在实现时遇到几个问题：
+1. urljoin模块：将相对路径组合得到绝对路径
+	Python2 ：from urlparse import urljoin
+	Python3对urllib和urllib2进行了重构，拆分成了urllib.request, urllib.response, urllib.parse, urllib.error等几个子模块，urllib.parse主要是解析网址用的
+Python3：from urllib.parse import urljoin 
+from urlparse import urljoin
+
+
+2. 为BeautifulSoup指定parser解析器
+	html = BeautifulSoup(response.text,"html.parser")
+
+3.字符串格式化方法format
+	有关键字参数时，必须使用关键字参数：
+>>> "{0}".format(a="a",b="b")
+IndexError: tuple index out of range
+	位置参数与关键字参数可以混合使用：
+>>> "{b}{0}".format("a",b="b")
+'ba'
+>>> "{{1}}".format("a", "b")
+'{1}'
+
+4.csv保存格式
+Python 3保存csv文件时采用text mode，导致JS无法导入csv文件内容（In Python 3 csv takes the input in text mode, whereas in Python 2 it took it in binary mode.），
+因此需要对open的encoding参数进行设置：
+csv_file = open("rent.csv","w", -1,"UTF-8")
+help(open)查看参数如何设置：
+open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None)
+
+5. 有些问题受当时水平所限，没有察觉到问题的根源，所以迟迟没有解决。看来，这玩意同样也是经验活儿。
