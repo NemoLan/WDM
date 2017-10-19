@@ -2,7 +2,7 @@
 在打开git bash时，每次都是在C:\Uer路径下，每次都需要先用cd命令转换到自己需要工作的路径（cd  /f/dss）。
 修改打开git bash 时的默认的路径就可以不用每次都使用cd命令转换到需要管理的目录。
 
-修改默认路径方法：右击Git Bash图标--->选择Short Cut标题栏--->修改Start in为想要管理的目录。
+修改默认路径方法：去掉"目标(T):"--cd-to-home，右击Git Bash图标--->选择Short Cut标题栏--->修改Start in为想要管理的目录。
 
 
 
